@@ -1,0 +1,133 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+// prisma/schema.prisma
+  // id                     ObjectId @id @default(auto()) @map("_id") @db.ObjectId
+//  firstName: String
+//   lastName: String
+//   email: String
+//   message: String
+//   organization: String
+//   location: String
+//   startAvailability: String
+//   endAvailability: String
+//   phone: String
+//   selectedSpecializations: String[]
+model Counselor {
+  id       String  @id @default(auto()) @map("_id") @db.ObjectId
+  firstName String
+  lastName  String
+  email     String @unique
+  message   String
+  organization String
+  resetToken           String?
+  resetTokenExpiry     DateTime?
+  location  String
+  isApproved         Boolean  @default(false)
+  startAvailability String
+  endAvailability String
+  phone     String
+  selectedSpecializations String[]
+  password  String
+  profilePicture String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  meetings           Meeting[]
+}
+
+model PeerCounselor {
+  id       String  @id @default(auto()) @map("_id") @db.ObjectId
+  firstName String
+  lastName  String
+  email     String @unique
+  message   String
+  resetToken           String?
+  resetTokenExpiry     DateTime?
+  organization String
+  location  String
+  isApproved         Boolean  @default(false)
+  startAvailability String
+  endAvailability String
+  phone     String
+  selectedSpecializations String[]
+  password  String
+  profilePicture String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  meetings           PeerMeeting[]
+}
+model Meeting {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  email     String
+  message   String
+  hour      Int
+  counselorEmail String
+  counselorName String
+  shareMeetingLink String @default("")
+  counselor    Counselor @relation(fields: [counselorId], references: [id])
+  counselorId String @db.ObjectId
+  isAccepted Boolean @default(false)
+}
+model PeerMeeting {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  email     String
+  message   String
+  hour      Int
+  counselorEmail String
+  counselorName String
+  shareMeetingLink String @default("")
+  peerCounselor    PeerCounselor @relation(fields: [peerCounselorId], references: [id])
+  peerCounselorId String @db.ObjectId
+  isAccepted Boolean @default(false)
+}
+
+  //  asset_id String;
+  //   bytes  Int;
+
+  //   format: string;
+  //   height: number;
+  //   original_filename: string;
+  //   pages: number;
+  //   placeholder: boolean;
+  //   public_id: string;
+  //   resource_type: string;
+  //   secure_url: string;
+model FileResources {
+  id       String  @id @default(auto()) @map("_id") @db.ObjectId
+  asset_id String
+  bytes  Int
+  format String
+  height Int
+  original_filename String
+  pages Int
+  placeholder Boolean
+  public_id String @unique
+  resource_type String
+  secure_url String
+  thumbnail String?
+  
+
+
+}
+
+
+model testimonial {
+  id       String  @id @default(auto()) @map("_id") @db.ObjectId
+  name String
+  description String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  rating Int
+  isApproved Boolean @default(false)
+}
